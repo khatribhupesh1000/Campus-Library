@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IntelliJ IDEA & IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.vscode/
+
+# Build & Dependency artifacts
+target/
+**/target/
+build/
+**/build/
+.mvn/wrapper/maven-wrapper.jar
+
+# Sensitive Configuration & Credentials
+**/application-local.properties
+**/application-secret.properties
+*.env
