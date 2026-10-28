@@ -1,178 +1,91 @@
-# Campus Library Management System 📚
+# Campus Library (GraphQL + Node.js + MySQL) 📚
 
-A modern, full-stack library management application powered by **Spring Boot**, **Spring for GraphQL**, **Spring Data JPA**, and **MySQL**, featuring an interactive web interface and integrated **GraphiQL** developer playground.
-
----
-
-## 🚀 Features
-
-- **GraphQL API**: Flexible schema with support for querying authors, books, and relational data trees without over-fetching.
-- **Mutations**: Dynamically add books assigned to authors with immediate relationship persistence.
-- **Integrated GraphiQL Playground**: In-browser interactive GraphQL IDE available at `/graphiql` for testing queries and mutations.
-- **Built-in Web UI**: Responsive, lightweight dashboard served directly at `/index.html` allowing users to view authors, their books, and add new titles.
-- **Auto Data Seeding**: Automatically seeds initial sample authors (*Asha Patel*, *Ravi Kumar*) and books on the first application startup.
-- **Secure Configuration**: Production-ready configuration separating sensitive credentials from version control using local property overlays.
+A full-stack GraphQL application built according to the **CS543 · Web Services** tutorial specification:  
+**HTML/CSS → GraphQL API (Node.js + Apollo Server) → MySQL Database**
 
 ---
 
-## 🛠️ Tech Stack
+## 🏗️ Architecture
 
-- **Language & Runtime**: Java 21
-- **Framework**: Spring Boot 4.x
-- **API Architecture**: Spring for GraphQL (GraphQL Java)
-- **Persistence & ORM**: Spring Data JPA & Hibernate
-- **Database**: MySQL 8.x / 9.x
-- **Frontend**: Vanilla JavaScript (Fetch API), HTML5, CSS3
-- **Build Tool**: Apache Maven (Maven Wrapper included)
+```text
+Browser (Front-end)  ──HTTP POST { query }──>  GraphQL API (Node + Apollo)  ──SQL──>  MySQL (Database)
+[public/index.html]                             [server.js :4000]                      [gqldemo]
+```
+
+- **Frontend**: Plain HTML5, CSS3, and JavaScript sending standard GraphQL `fetch()` requests.
+- **Backend**: Node.js standalone server with `@apollo/server` running on port `4000`.
+- **Database**: MySQL database `gqldemo` with relational `authors` and `books` tables.
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-CAMPUS LIBRARY/
-├── .gitignore
-├── README.md
-└── demo/
-    ├── pom.xml
-    ├── mvnw
-    ├── mvnw.cmd
-    └── src/
-        ├── main/
-        │   ├── java/
-        │   │   └── com/example/campuslibrary/
-        │   │       ├── CampusLibraryApplication.java   # Main entry point & data seeder
-        │   │       ├── controller/
-        │   │       │   └── LibraryController.java      # GraphQL Query & Mutation mappings
-        │   │       ├── model/
-        │   │       │   ├── Author.java                 # Author JPA Entity
-        │   │       │   └── Book.java                   # Book JPA Entity
-        │   │       └── repository/
-        │   │           ├── AuthorRepository.java       # JPA repository for authors
-        │   │           └── BookRepository.java         # JPA repository for books
-        │   └── resources/
-        │       ├── application.properties              # Core configuration template
-        │       ├── application-local.properties.example # Sample local credentials
-        │       ├── graphql/
-        │       │   └── schema.graphqls                 # GraphQL SDL schema definition
-        │       └── static/
-        │           ├── index.html                      # Frontend library dashboard
-        │           └── style.css                       # Dashboard styling
-        └── test/
+campus-library/
+├── schema.sql           # Database schema & sample rows
+├── db.js                # MySQL connection pool (mysql2/promise)
+├── server.js            # GraphQL schema (typeDefs) + resolvers + Apollo Server
+├── package.json         # Node.js dependencies
+├── .env.example         # MySQL credentials template
+├── public/
+│   ├── index.html       # Web dashboard (query list + add book mutation)
+│   └── style.css        # Clean styling
+└── demo/                # (Optional) Java Spring Boot alternative implementation
 ```
 
 ---
 
-## ⚙️ Getting Started
+## ⚙️ Quick Start
 
-### Prerequisites
+### 1. Prerequisites
+- **Node.js**: v18 or newer (`node -v`)
+- **MySQL Server**: Running on `localhost:3306` (`mysql --version`)
 
-- **Java Development Kit (JDK)**: Version 21 or newer
-- **MySQL Server**: Running on `localhost:3306`
-
-### 1. Clone the Repository
-
+### 2. Set Up the MySQL Database
+Log into MySQL and execute `schema.sql`:
 ```bash
-git clone https://github.com/khatribhupesh1000/Campus-Library.git
-cd Campus-Library/demo
+mysql -u root -p < schema.sql
 ```
+*(Or run the SQL statements inside `schema.sql` directly in MySQL Workbench / CLI).*
 
-### 2. Set Up the Database
-
-Open your MySQL client or CLI and create the database:
-
-```sql
-CREATE DATABASE gqldemo;
-```
-
-### 3. Configure Credentials
-
-To keep credentials secure, the repository does not track passwords. You have two options:
-
-#### Option A: Using `application-local.properties` (Recommended)
-Copy the template inside `demo/src/main/resources/`:
+### 3. Install Dependencies
 ```bash
-cp src/main/resources/application-local.properties.example src/main/resources/application-local.properties
-```
-Edit `src/main/resources/application-local.properties` and set your MySQL password:
-```properties
-spring.datasource.password=your_mysql_password
+npm install
 ```
 
-#### Option B: Using Environment Variables
-Set the environment variable in your terminal or IDE:
+### 4. Configure Database Password
+Copy `.env.example` to `.env` (this file is ignored by git to keep passwords private):
 ```bash
-export DB_PASSWORD="your_mysql_password"
+cp .env.example .env
 ```
+Edit `.env` with your local MySQL password:
+```env
+DB_PASSWORD=your_mysql_password
+```
+*(Alternatively, you can export `DB_PASSWORD=your_password` in your terminal or edit `db.js`).*
+
+### 5. Start the GraphQL API Server
+```bash
+npm start
+# or: node server.js
+```
+The console will display:
+```text
+GraphQL API ready at http://localhost:4000/
+```
+
+### 6. Open the Web Frontend
+Open `public/index.html` in your browser (e.g. using VS Code **Live Server** or double-clicking the file).  
+The page will immediately fetch and display the authors and their books.
 
 ---
 
-## ▶️ Running the Application
+## 📜 GraphQL Operations
 
-### Via Maven Wrapper:
-```bash
-./mvnw spring-boot:run
-```
-
-### Via IDE (IntelliJ IDEA / Eclipse / VS Code):
-Run the `main` method in:
-`com.example.campuslibrary.CampusLibraryApplication`
-
----
-
-## 🌐 Endpoints & Usage
-
-Once started, the application runs on `http://localhost:8080`:
-
-| Component | URL | Description |
-| :--- | :--- | :--- |
-| **Web Dashboard** | [http://localhost:8080/index.html](http://localhost:8080/index.html) | Interactive web page to view & add books |
-| **GraphiQL Playground** | [http://localhost:8080/graphiql](http://localhost:8080/graphiql) | In-browser GraphQL query editor |
-| **GraphQL Endpoint** | `POST http://localhost:8080/graphql` | API endpoint for client applications |
-
----
-
-## 📜 Example GraphQL Operations
-
-### 1. Query All Authors and Their Books
-
+### Query: List Authors with Nested Books
 ```graphql
 query {
   authors {
-    id
-    name
-    country
-    books {
-      id
-      title
-      year
-    }
-  }
-}
-```
-
-### 2. Query All Books with Author Details
-
-```graphql
-query {
-  books {
-    id
-    title
-    year
-    author {
-      id
-      name
-      country
-    }
-  }
-}
-```
-
-### 3. Query a Single Author by ID
-
-```graphql
-query {
-  author(id: "1") {
     name
     country
     books {
@@ -183,16 +96,14 @@ query {
 }
 ```
 
-### 4. Mutation: Add a New Book
-
+### Mutation: Add a New Book
 ```graphql
 mutation {
-  addBook(title: "Designing Data-Intensive Applications", year: 2017, authorId: "1") {
+  addBook(title: "GraphQL for Beginners", year: 2025, authorId: 2) {
     id
     title
     year
     author {
-      id
       name
     }
   }
@@ -202,7 +113,6 @@ mutation {
 ---
 
 ## 👤 Author
-
 **Bhupesh Kumar**  
 GitHub: [@khatribhupesh1000](https://github.com/khatribhupesh1000)  
 Email: [khatribhupesh1000@gmail.com](mailto:khatribhupesh1000@gmail.com)
