@@ -1,7 +1,5 @@
 # macOS
 .DS_Store
-.AppleDouble
-.LSOverride
 
 # Node.js
 node_modules/
@@ -9,24 +7,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# IntelliJ IDEA & IDE files
-.idea/
-*.iml
-*.iws
-*.ipr
-out/
-.vscode/
-
-# Build & Dependency artifacts
-target/
-**/target/
-build/
-**/build/
-.mvn/wrapper/maven-wrapper.jar
-
-# Sensitive Configuration & Credentials
+# Environment
 .env
 *.env
 !.env.example
-**/application-local.properties
-**/application-secret.properties

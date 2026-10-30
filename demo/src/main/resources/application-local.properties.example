@@ -1,3 +1,0 @@
-# Example local development configuration
-# Copy this file to application-local.properties and update the password
-spring.datasource.password=your_mysql_password_here
